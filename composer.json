@@ -25,5 +25,15 @@
             "email": "yayahmohammed@gmail.com"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "extra": {
+        "laravel": {
+          "providers": [
+            "Devmohy\\Budpay\\BudpayServiceProvider"
+          ],
+          "aliases": {
+            "Budpay": "Devmohy\\Budpay\\Facades\\Budpay"
+          }
+        }
+      }
 }
