@@ -1,0 +1,29 @@
+{
+    "name": "devmohy/laravel-budpay",
+    "description": "A Laravel package for budpay",
+    "keywords": [
+        "php",
+        "laravel",
+        "payments",
+        "budpay",
+        "budpay.com",
+        "laravel 7",
+        "laravel 8",
+        "laravel 9",
+        "laravel 9"
+      ],
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Devmohy\\Budpay\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mohammed Yayah",
+            "email": "yayahmohammed@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
