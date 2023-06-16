@@ -71,7 +71,7 @@ class Budpay
    */
   public function setBaseUrl()
   {
-    $this->baseUrl = "https://api.budpay.com/api";
+    $this->baseUrl = Config::get('budpay.paymentUrl');
   }
 
   /**
@@ -79,11 +79,7 @@ class Budpay
    */
   public function setKey()
   {
-    //       Test Secret Key:
-    // sk_test_3xd7ybrhumna6sn9kumn3eqljal6lghshb3uiu9
-    // Test Public Key:
-    // pk_test_jv8yueg1ycwkowviqw91swbewglvziwde9idpd
-    $this->secretKey = "sk_test_3xd7ybrhumna6sn9kumn3eqljal6lghshb3uiu9";
+    $this->secretKey = Config::get('budpay.secretKey');
   }
 
 
@@ -374,9 +370,13 @@ class Budpay
    * @return Budpay
    */
 
-  public function fetchRefund($data = null)
+  public function fetchRefund($reference = null)
   {
-    $this->setHttpResponse('/v2/refund/status', 'POST', $data);
+    $ref = $reference ?? request()->query('reference');
+
+    $relativeUrl = "/refund/status/:{$ref}";
+
+    $this->response = $this->http->get($this->baseUrl . $relativeUrl, []);
     return $this->getResponse();
   }
 
@@ -384,36 +384,51 @@ class Budpay
    * Get all the transactions that have happened overtime
    * @return array
    */
-  public function bankLists()
+  public function bankLists($currency = "NGN")
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+ 
+    $url = "/v2/bank_list/{$currency}";
+    
+    return $this->setHttpResponse($url, 'GET', [])->getResponse();
   }
 
   /**
    * Get all the transactions that have happened overtime
    * @return array
    */
-  public function singlePayout()
+  public function singlePayout($data = null)
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    if($data == null){
+      $data = [
+      "currency" => request()->currency,
+      "amount" => request()->amount,
+      "bank_code" => request()->bank_code,
+      "bank_name" => request()->bank_name,
+      "account_number" => request()->account_number,
+      "narration" => request()->narration
+      ];
+    }
+    return $this->setHttpResponse("/v2/bank_transfer", 'POST', $data)->getData();
   }
 
   /**
    * Get all the transactions that have happened overtime
    * @return array
    */
-  public function bulkPayout()
+  public function bulkPayout($data)
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    return $this->setHttpResponse("/v2/bulk_bank_transfer", 'POST', $data)->getResponse();
   }
 
   /**
    * Get all the transactions that have happened overtime
    * @return array
    */
-  public function verifyPayout()
+  public function verifyPayout($trxRef)
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    $transactionRef = $trxRef ?? request()->query('trxref');
+    $relativeUrl = "/v2/payout/:{$transactionRef}";
+    $this->response = $this->http->get($this->baseUrl . $relativeUrl, []);
   }
   /**
    * Get all the transactions that have happened overtime
@@ -421,23 +436,23 @@ class Budpay
    */
   public function payoutFee()
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    return $this->setHttpResponse("/v2/transaction", 'POST', [])->getData();
   }
   /**
    * Get all the transactions that have happened overtime
    * @return array
    */
-  public function walletBalance()
+  public function walletBalance($currency = 'NGN')
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    return $this->setHttpResponse("v2/wallet_balance/{$currency}", 'GET', [])->getResponse();
   }
   /**
    * Get all the transactions that have happened overtime
    * @return array
    */
-  public function walletTransactions()
+  public function walletTransactions($currency = 'NGN')
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    return $this->setHttpResponse("/v2/wallet_transactions/{$currency}", 'GET', [])->getResponse();
   }
 
 
@@ -547,15 +562,6 @@ class Budpay
   }
 
   /**
-   * Get Access code from transaction callback respose
-   * @return string
-   */
-  public function getAccessCode()
-  {
-    return $this->getResponse()['data']['access_code'];
-  }
-
-  /**
    * Get all the transactions that have happened overtime
    * @return array
    */
@@ -570,126 +576,188 @@ class Budpay
    */
   public function airtimeProviders()
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    return $this->setHttpResponse("/v2/airtime", 'GET', [])->getData();
   }
 
   /**
    * Get all the transactions that have happened overtime
    * @return array
    */
-  public function airtimeTopUp()
+  public function airtimeTopUp($data = null)
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+
+    return $this->setHttpResponse("/v2/airtime/topup", 'POST', $data)->getData();
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Getting all available Internet Providers.
    * @return array
    */
   public function internetProviders()
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    return $this->setHttpResponse("/v2/internet", 'GET', [])->getResponse();
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Getting all available Internet Data Plans
    * @return array
    */
-  public function internetDataPlans()
+  public function internetDataPlans($provider = null)
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    $provider = $provider ?? request()->query('provider');
+    return $this->setHttpResponse("/v2/internet/plans/{$provider}", 'GET', [])->getResponse();
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Initiate a Internet Data Purchase Transaction
+   * @param array $data
    * @return array
    */
-  public function internetDataPurchase()
+  public function internetDataPurchase($data = null)
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    if($data == null){
+      $data = array_filter([
+        'provider' => request()->provider,
+        'number' => request()->number,
+        'plan_id' => request()->number,
+        'reference' => request()->reference,
+      ]);
+    }
+    return $this->setHttpResponse("/v2/internet/data", 'POST', $data)->getResponse();
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Get  all available Tv Packages (Bouquet) of a Provider
    * @return array
    */
   public function tvProviders()
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    return $this->setHttpResponse("/v2/tv", 'GET', [])->getResponse();
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Get all available Tv Packages (Bouquet) of a Provider
+   * @param string $provider
    * @return array
    */
-  public function tvProviderPackages()
+  public function tvProviderPackages($provider)
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    $provider = $provider ?? request()->query('provider');
+    return $this->setHttpResponse("/v2/tv/packages/{$provider}", 'GET',)->getResponse();
   }
 
 
   /**
-   * Get all the transactions that have happened overtime
+   * Perform a Tv UIC Number Validation
+   * @param array $data
    * @return array
    */
-  public function tvValidate()
+  public function tvValidate($data = null)
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    if($data == null){
+      $data = array_filter([
+        'provider' => request()->provider,
+        'number' => request()->number
+      ]);
+    }
+    return $this->setHttpResponse("/v2/tv/validate", 'POST', $data)->getResponse();
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Initiate a Tv Subscription Payment
    * @return array
    */
-  public function tvSubscription()
+  public function tvSubscription($data = null)
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    if($data == null){
+      $data = array_filter([
+        'provider' => request()->provider,
+        'number' => request()->number,
+        'code' => request()->code,
+        'reference' => request()->reference
+      ]);
+    }
+    return $this->setHttpResponse("/v2/tv/pay", 'POST', $data)->getResponse();
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Getting all available Electricity Providers
    * @return array
    */
   public function electricityProviders()
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    return $this->setHttpResponse("/v2/electricity", 'GET', [])->getData();
+  }
+
+  /**
+   * Perform a Electricity Meter Number Validation
+   * @return array
+   */
+  public function electricityValidate($data = null)
+  {
+    if($data == null){
+      $data = array_filter([
+        'provider' => request()->provider,
+        'number' => request()->number
+      ]);
+    }
+    return $this->setHttpResponse("/v2/electricity/validate", 'POST', $data)->getResponse();
+  }
+
+  /**
+   * To Initiate a Electricity Recharge Payment
+   * @return array
+   */
+  public function electricityRecharge($data = null)
+  {
+    if ($data == null) {
+      $data = array_filter([
+        "bank_code" => request()->bank_code,
+        "account_number" => request()->account_number,
+        "currency" => request()->currency,
+      ]);
+    }
+    return $this->setHttpResponse("/v2/electricity/recharge", 'POST', $data)->getResponse();
+  }
+
+
+  /**
+   * Get the account name on an account number.
+   * @return array
+   */
+  public function accountNameVerify($data = null)
+  {
+    if ($data == null) {
+      $data = array_filter([
+        "bank_code" => request()->bank_code,
+        "account_number" => request()->account_number,
+        "currency" => request()->currency,
+      ]);
+    }
+    $this->setHttpResponse('/v2/bank_transfer', 'POST', $data);
+    return $this->getResponse();
   }
 
   /**
    * Get all the transactions that have happened overtime
    * @return array
    */
-  public function electricityValidate()
+  public function verifyBVN($data = null)
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
-  }
-
-  /**
-   * Get all the transactions that have happened overtime
-   * @return array
-   */
-  public function electricityRecharge()
-  {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
-  }
-
-
-  /**
-   * Get all the transactions that have happened overtime
-   * @return array
-   */
-  public function accountNameVerify()
-  {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
-  }
-
-  /**
-   * Get all the transactions that have happened overtime
-   * @return array
-   */
-  public function verifyBVN()
-  {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    if($data == null){
+      $data = array_filter([
+        "bvn" => request()->bvn,
+        "first_name" => request()->first_name,
+        "middle_name" => request()->middle_name,
+        "last_name" => request()->last_name,
+        "phone_number" => request()->bank_code,
+        "dob" => request()->dob,
+        "gender" => request()->gender,
+        "reference" => request()->reference,
+        "callback_url" => request()->callback_url
+      ]);
+    }
+    return $this->setHttpResponse("/v2/bvn/verify", 'POST',$data)->getData();
   }
 
   /**
