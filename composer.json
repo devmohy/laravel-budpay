@@ -6,11 +6,7 @@
         "laravel",
         "payments",
         "budpay",
-        "budpay.com",
-        "laravel 7",
-        "laravel 8",
-        "laravel 9",
-        "laravel 9"
+        "budpay.com"
       ],
     "type": "library",
     "license": "MIT",
