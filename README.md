@@ -37,6 +37,12 @@ return [
      */
     'secretKey' => getenv('BUDPAY_SECRET_KEY'),
 
+    /**
+     * Paystack Payment URL
+     *
+     */
+    'paymentUrl' => env('BUDPAY_PAYMENT_URL'),
+
 ];
 ```
 
