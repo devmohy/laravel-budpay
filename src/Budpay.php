@@ -95,7 +95,7 @@ class Budpay
     if ($data == null) {
       $quantity = intval(request()->quantity ?? 1);
       $data = array_filter([
-        "amount" => intval(request()->amount) * $quantity,
+        "amount" => strval(intval(request()->amount) * $quantity),
         "reference" => request()->reference,
         "email" => request()->email,
         "callback" => request()->callback_url,
@@ -479,7 +479,7 @@ class Budpay
    */
   private function verifyTransactionAtGateway($trxRef= null)
   {
-    $transactionRef = $trxRef ?? request()->query('trxref');
+    $transactionRef = $trxRef ?? request()->query('reference');
 
     $relativeUrl = "/v2/transaction/verify/:{$transactionRef}";
 

@@ -59,7 +59,8 @@ BUDPAY_PAYMENT_URL=https://api.budpay.com/api
 Set up routes and controller methods like so:
 
 ```php
-// Laravel 8
+Route::post('/pay', [App\Http\Controllers\PaymentController::class, 'redirectToGateway'])->name('pay');
+
 Route::get('/payment/callback', [App\Http\Controllers\PaymentController::class, 'handleGatewayCallback']);
 ```
 
@@ -109,7 +110,9 @@ class PaymentController extends Controller
 The Laravel Budpay package offers several methods to facilitate integration with the Budpay payment gateway in Laravel applications. Here are the key methods provided by the package:
 ```php
 /*
-This convenient method handles the behind-the-scenes tasks of sending a POST request with the form data to the Budpay API. It takes care of all the necessary steps, including obtaining the authorization URL and redirecting the user to the Budpay Payment Page. We've abstracted away all the complexities, allowing you to focus on your coding tasks without worrying about these implementation details. So go ahead, enjoy your coding journey while we handle the rest!
+* This convenient method handles the behind-the-scenes tasks of sending a POST request with the * form data to the Budpay API. It takes care of all the necessary steps, including obtaining 
+* the authorization URL and redirecting the user to the Budpay Payment Page. We've abstracted
+* away all the complexities, allowing you to focus on your coding tasks without worrying about  * these implementation details. So go ahead, enjoy your coding journey while we handle the rest!
 */
 Budpay::getAuthorizationUrl()->redirectNow();
 
