@@ -8,6 +8,10 @@
         "budpay",
         "budpay.com"
       ],
+      "homepage": "https://github.com/devmohy/laravel-budpay",
+      "require": {
+          "php": "^7.4|^8.0"
+      },
     "type": "library",
     "license": "MIT",
     "autoload": {
