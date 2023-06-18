@@ -108,25 +108,13 @@ This convenient method handles the behind-the-scenes tasks of sending a POST req
 Budpay::getAuthorizationUrl()->redirectNow();
 
 /**
- * Alternatively, use the helper.
- */
-budpay()->getAuthorizationUrl()->redirectNow();
-
-
-/**
  * This method gets all the transactions that have occurred
  * @returns array
  */
 Budpay::getAllTransactions();
-
-/**
- * Alternatively, use the helper.
- */
-budpay()->getAllTransactions();
 ```
 
 A sample form will look like so:
-
 
 ```html
 <form method="POST" action="{{ route('pay') }}" accept-charset="UTF-8" class="form-horizontal" role="form">
