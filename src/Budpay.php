@@ -156,20 +156,6 @@ class Budpay
   }
 
   /**
-
-   * Initiate a payment request to Budpay
-   * Included the option to pass the payload to this method for situations
-   * when the payload is built on the fly (not passed to the controller from a view)
-   * @return Budpay
-   */
-
-  public function encrypt(array $data = null)
-  {
-    $this->setHttpResponse(' /test/encryption', 'POST', $data);
-    return $this->getResponse();
-  }
-
-  /**
    * Fetch transaction with $transaction_id
    * @return Budpay
    */
@@ -183,13 +169,21 @@ class Budpay
   }
 
   /**
-   * Feature notworking yet
    * Initiate a payment request to Budpay
    * @param array $data
    * @return Budpay
    */
   public function requestPayment($data = null)
   {
+    if ($data == null) {
+      $data = array_filter([
+        "email" => request()->email,
+        "first_name" => request()->first_name,
+        "last_name" => request()->last_name,
+        "phone" => request()->phone,
+        "metadata" => request()->metadata,
+      ]);
+    }
     $this->setHttpResponse('/v2/request_payment', 'POST', $data);
     return $this->getResponse();
   }
@@ -218,13 +212,11 @@ class Budpay
   }
 
   /**
-
    * Initiate a payment request to Budpay
    * Included the option to pass the payload to this method for situations
    * when the payload is built on the fly (not passed to the controller from a view)
    * @return Budpay
    */
-
   public function createDedicatedVirtualAccount($data = null)
   {
     if ($data == null) {
@@ -241,13 +233,9 @@ class Budpay
   }
 
   /**
-
-   * Initiate a payment request to Budpay
-   * Included the option to pass the payload to this method for situations
-   * when the payload is built on the fly (not passed to the controller from a view)
+   * List dedicated virtual accounts
    * @return Budpay
    */
-
   public function listDedicatedVirtualAccount()
   {
     $this->setHttpResponse('/v2/list_dedicated_accounts', 'GET', []);
@@ -255,13 +243,9 @@ class Budpay
   }
 
   /**
-
-   * Initiate a payment request to Budpay
-   * Included the option to pass the payload to this method for situations
-   * when the payload is built on the fly (not passed to the controller from a view)
+   * Fetch Dedicated Virtual Account By ID
    * @return Budpay
    */
-
    public function fetchDedicatedVirtualAccountById($account_id = null)
    {
      $accountId = $account_id ?? request()->query('account_id');
@@ -274,12 +258,11 @@ class Budpay
 
   /**
 
-   * Initiate a payment request to Budpay
+   * Create Payment Link
    * Included the option to pass the payload to this method for situations
    * when the payload is built on the fly (not passed to the controller from a view)
    * @return Budpay
    */
-
   public function createPaymentLink($data = null)
   {
     if ($data == null) {
@@ -298,13 +281,9 @@ class Budpay
 
 
   /**
-
-   * Initiate a payment request to Budpay
-   * Included the option to pass the payload to this method for situations
-   * when the payload is built on the fly (not passed to the controller from a view)
+   * Fetch Settlements
    * @return Budpay
    */
-
   public function getSettlements()
   {
     $this->setHttpResponse('/v2/settlement', '  GET', []);
@@ -312,13 +291,9 @@ class Budpay
 
 }
   /**
-
-   * Initiate a payment request to Budpay
-   * Included the option to pass the payload to this method for situations
-   * when the payload is built on the fly (not passed to the controller from a view)
+   * Fetch Settlements By Batch ID
    * @return Budpay
    */
-
   public function getSettlementsByBatch($batch_id)
   {
     $batchId = $batch_id ?? request()->query('account_id');
@@ -330,13 +305,11 @@ class Budpay
   }
 
   /**
-
-   * Initiate a payment request to Budpay
+   * Create Refund
    * Included the option to pass the payload to this method for situations
    * when the payload is built on the fly (not passed to the controller from a view)
    * @return Budpay
    */
-
   public function createRefund($data = null)
   {
     if ($data == null) {
@@ -349,13 +322,9 @@ class Budpay
   }
 
   /**
-
-   * Initiate a payment request to Budpay
-   * Included the option to pass the payload to this method for situations
-   * when the payload is built on the fly (not passed to the controller from a view)
+   * Fetch Refunds
    * @return Budpay
    */
-
   public function listRefunds()
   {
     $this->setHttpResponse('/v2/refund', 'GET', []);
@@ -363,13 +332,9 @@ class Budpay
   }
 
   /**
-
-   * Initiate a payment request to Budpay
-   * Included the option to pass the payload to this method for situations
-   * when the payload is built on the fly (not passed to the controller from a view)
+   * Fetch refund by Reference
    * @return Budpay
    */
-
   public function fetchRefund($reference = null)
   {
     $ref = $reference ?? request()->query('reference');
@@ -381,19 +346,17 @@ class Budpay
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Fetch Banks
    * @return array
    */
   public function bankLists($currency = "NGN")
   {
- 
-    $url = "/v2/bank_list/{$currency}";
-    
+    $url = "/v2/bank_list/{$currency}"; 
     return $this->setHttpResponse($url, 'GET', [])->getResponse();
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Initiate Transfer
    * @return array
    */
   public function singlePayout($data = null)
@@ -421,7 +384,7 @@ class Budpay
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Fetch a payout record using payout reference.
    * @return array
    */
   public function verifyPayout($trxRef)
@@ -430,24 +393,33 @@ class Budpay
     $relativeUrl = "/v2/payout/:{$transactionRef}";
     $this->response = $this->http->get($this->baseUrl . $relativeUrl, []);
   }
+
   /**
-   * Get all the transactions that have happened overtime
+   * Payout Fee (Bank Transfer Fee)
    * @return array
    */
-  public function payoutFee()
+  public function payoutFee($data = null)
   {
-    return $this->setHttpResponse("/v2/transaction", 'POST', [])->getData();
+    if($data == null){
+      $data = [
+      "currency" => request()->currency,
+      "amount" => request()->amount,
+      ];
+    }
+    return $this->setHttpResponse("/v2/transaction", 'POST', $data)->getData();
   }
+
   /**
-   * Get all the transactions that have happened overtime
+   * Get Wallet balance by Currency
    * @return array
    */
   public function walletBalance($currency = 'NGN')
   {
     return $this->setHttpResponse("v2/wallet_balance/{$currency}", 'GET', [])->getResponse();
   }
+
   /**
-   * Get all the transactions that have happened overtime
+   * The Wallet transactions API allows you fetch all your wallet transaction history.
    * @return array
    */
   public function walletTransactions($currency = 'NGN')
@@ -567,30 +539,36 @@ class Budpay
    */
   public function getAllTransactions()
   {
-    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getData();
+    return $this->setHttpResponse("/v2/transaction", 'GET', [])->getResponse();
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Fetch all available Airtime Providers
    * @return array
    */
   public function airtimeProviders()
   {
-    return $this->setHttpResponse("/v2/airtime", 'GET', [])->getData();
+    return $this->setHttpResponse("/v2/airtime", 'GET', [])->getResponse();
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Buy Airtime
    * @return array
    */
   public function airtimeTopUp($data = null)
   {
-
-    return $this->setHttpResponse("/v2/airtime/topup", 'POST', $data)->getData();
+    if($data == null){
+      $data = [
+      "number" => request()->number,
+      "amount" => request()->amount,
+      "reference" => request()->reference
+      ];
+    }
+    return $this->setHttpResponse("/v2/airtime/topup", 'POST', $data)->getResponse();
   }
 
   /**
-   * Getting all available Internet Providers.
+   * Fetch all available Internet Providers.
    * @return array
    */
   public function internetProviders()
@@ -627,7 +605,7 @@ class Budpay
   }
 
   /**
-   * Get  all available Tv Packages (Bouquet) of a Provider
+   * Get all available Tv Packages (Bouquet) of a Provider
    * @return array
    */
   public function tvProviders()
@@ -686,7 +664,7 @@ class Budpay
    */
   public function electricityProviders()
   {
-    return $this->setHttpResponse("/v2/electricity", 'GET', [])->getData();
+    return $this->setHttpResponse("/v2/electricity", 'GET', [])->getResponse();
   }
 
   /**
@@ -698,6 +676,7 @@ class Budpay
     if($data == null){
       $data = array_filter([
         'provider' => request()->provider,
+        'type' => request()->type,
         'number' => request()->number
       ]);
     }
@@ -712,9 +691,11 @@ class Budpay
   {
     if ($data == null) {
       $data = array_filter([
-        "bank_code" => request()->bank_code,
-        "account_number" => request()->account_number,
-        "currency" => request()->currency,
+        'provider' => request()->provider,
+        'type' => request()->type,
+        'number' => request()->number,
+        "amount" => request()->amount,
+        "reference" => request()->reference
       ]);
     }
     return $this->setHttpResponse("/v2/electricity/recharge", 'POST', $data)->getResponse();
@@ -757,7 +738,7 @@ class Budpay
         "callback_url" => request()->callback_url
       ]);
     }
-    return $this->setHttpResponse("/v2/bvn/verify", 'POST',$data)->getData();
+    return $this->setHttpResponse("/v2/bvn/verify", 'POST',$data)->getResponse();
   }
 
   /**
