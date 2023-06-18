@@ -126,7 +126,7 @@ A sample form will look like so:
                     ₦ 2,950
                 </div>
             </p>
-            <input type="hidden" name="email" value="otemuyiwa@gmail.com"> {{-- required --}}
+            <input type="hidden" name="email" value="yayahmohammed@gmail.com"> {{-- required --}}
             <input type="hidden" name="orderID" value="345">
             <input type="hidden" name="amount" value="800"> {{-- required in kobo --}}
             <input type="hidden" name="quantity" value="3">
