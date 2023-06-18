@@ -212,7 +212,7 @@ class Budpay
   }
 
   /**
-   * Initiate a payment request to Budpay
+   * Create a dedicated virtual account and assign to a customer
    * Included the option to pass the payload to this method for situations
    * when the payload is built on the fly (not passed to the controller from a view)
    * @return Budpay

@@ -108,6 +108,8 @@ class PaymentController extends Controller
 ```
 
 The Laravel Budpay package offers several methods to facilitate integration with the Budpay payment gateway in Laravel applications. Here are the key methods provided by the package:
+## - Accept payment
+
 ```php
 /*
 * This convenient method handles the behind-the-scenes tasks of sending a POST request with the * form data to the Budpay API. It takes care of all the necessary steps, including obtaining 
@@ -121,6 +123,40 @@ Budpay::getAuthorizationUrl()->redirectNow();
  * @returns array
  */
 Budpay::getAllTransactions();
+
+/**
+ * This method Initiate a payment request using Budpay Standard Checkout
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::standardCheckout();
+
+/**
+ * This method Initiate a payment request using Budpay Server To Server Bank Transfer Checkout
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::serverToServerBankTransferCheckout();
+
+/**
+ * This method Initiate a payment request to Budpay using server to server v2
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::serverToServerV2();
+
+/**
+ * This method Fetch transaction using transaction ID
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::fetchTransaction();
+
+
 ```
 
 A sample form will look like so:
@@ -132,11 +168,11 @@ A sample form will look like so:
             <p>
                 <div>
                     Donjazzy's Burger
-                    ₦ 2,950
+                    ₦ 2,400
                 </div>
             </p>
             <input type="hidden" name="email" value="yayahmohammed@gmail.com"> {{-- required --}}
-            <input type="hidden" name="orderID" value="345">
+            <input type="hidden" name="orderID" value="ORD123">
             <input type="hidden" name="amount" value="800"> {{-- required in kobo --}}
             <input type="hidden" name="quantity" value="3">
             <input type="hidden" name="currency" value="NGN">
@@ -148,6 +184,103 @@ A sample form will look like so:
         </div>
     </div>
 </form>
+```
+## - Payment Features
+
+```php
+/**
+ * Initiate a payment request to Budpay
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::requestPayment();
+
+/**
+ * This method Create customer on budpay
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::createCustomer();
+
+/**
+ * This method Create a dedicated virtual account and assign to a customer
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::createDedicatedVirtualAccount();
+
+/**
+ * This method List dedicated virtual accounts
+ * @returns array
+ */
+Budpay::listDedicatedVirtualAccount();
+
+/**
+ * This method Fetch Dedicated Virtual Account By ID
+ * @returns array
+ */
+Budpay::fetchDedicatedVirtualAccountById();
+
+/**
+ * This method Create Payment Link
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::createPaymentLink();
+
+/**
+ * This method Fetch Settlements
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::getSettlements();
+
+/**
+ * This method Fetch Settlements By Batch ID
+ * @returns array
+ */
+Budpay::getSettlementsByBatch();
+
+/**
+ * This method Create Refund
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::createRefund();
+
+/**
+ * This method Fetch Refunds
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::listRefunds();
+
+/**
+ * This method Fetch refund by Reference
+ * @returns array
+ */
+Budpay::fetchRefund();
+
+/**
+ * This method Fetch Banks
+ * @returns array
+ */
+Budpay::bankLists();
+
+/**
+ * This method Initiate Transfer
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::singlePayout();
 ```
 
 
