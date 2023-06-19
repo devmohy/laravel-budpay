@@ -48,7 +48,7 @@ return [
 
 ## Usage
 
-Open your .env file and add your public key, secret key, merchant email and payment url like so:
+Open your .env file and add your public key, secret key, and payment url like so:
 
 ```php
 BUDPAY_PUBLIC_KEY=xxxxxxxxxxxxx
