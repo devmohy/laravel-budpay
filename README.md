@@ -267,7 +267,11 @@ Budpay::listRefunds();
  * @returns array
  */
 Budpay::fetchRefund();
+```
 
+## - Payment Features
+
+```php
 /**
  * This method Fetch Banks
  * @returns array
@@ -281,6 +285,171 @@ Budpay::bankLists();
  * @returns array
  */
 Budpay::singlePayout();
+
+/**
+ * This method Initiate Bulk Transfer
+ * "currency": "NGN",
+ * "transfers": [
+ *      {
+ *      "amount": "200",
+ *      "bank_code": "000013",
+ *      "bank_name": "GUARANTY TRUST BANK",
+ *      "account_number": "0050883605",
+ *      "narration": "January Salary"
+ *      },
+ *      {
+ *       "amount": "100",
+ *       "bank_code": "000013",
+ *          "bank_name": "GUARANTY TRUST BANK",
+ *           "account_number": "0050883605",
+ *          "narration": "February  Salary"
+ *      },
+ *   ]
+ * @returns array
+ */
+Budpay::bulkPayout(
+    ["currency" => "NGN",
+    "transfers" => [
+        {
+            "amount" => "200",
+            "bank_code" => "000013",
+            "bank_name" => "GUARANTY TRUST BANK",
+            "account_number" => "0050883605",
+            "narration" => "January Salary"
+        },
+        {
+            "amount" => "100",
+            "bank_code" => "000013",
+            "bank_name" => "GUARANTY TRUST BANK",
+            "account_number" => "0050883605",
+            "narration" => "February  Salary"
+        },
+        {
+            "amount" => "100",
+            "bank_code" => "000013",
+            "bank_name" => "GUARANTY TRUST BANK",
+            "account_number" => "0050883605",
+            "narration" => "March  Salary"
+        }
+    ]]
+);
+
+/**
+ * This method Fetch a payout record using payout reference.
+ * @param $ref
+ * @returns array
+ */
+Budpay::verifyPayout($ref);
+
+/**
+ * This method return Payout Fee (Bank Transfer Fee)
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::payoutFee();
+
+/**
+ * This method return  Wallet balance by Currency
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::walletBalance();
+
+/**
+ * This Wallet transactions method allows you fetch all your wallet transaction history.
+ * @returns array
+ */
+Budpay::walletTransactions();
+```
+## - Bills Payment
+
+```php
+/**
+ * This method Fetch all available Airtime Providers
+ * @returns array
+ */
+Budpay::airtimeProviders();
+
+/**
+ * This method Buy Airtime
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::airtimeTopUp();
+
+/**
+ * This method FFetch all available Internet Providers.
+ * @returns array
+ */
+Budpay::internetProviders();
+
+/**
+ * This method Get all available Internet Data Plans
+ * @returns array
+ */
+Budpay::internetDataPlans();
+
+/**
+ * This method Initiate a Internet Data Purchase Transaction
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::internetDataPurchase();
+
+/**
+ * This method Get all available Tv Packages (Bouquet) of a Provider
+ * @returns array
+ */
+Budpay::tvProviders();
+
+/**
+ * This method Get all available Tv Packages (Bouquet) of a Provider
+ * @param string $provider
+ * @returns array
+ */
+Budpay::tvProviderPackages();
+
+/**
+ * This method Perform a Tv UIC Number Validation
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::tvValidate();
+
+/**
+ * This method Initiate a Tv Subscription Payment
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::tvSubscription();
+
+/**
+ * This method Get all available Electricity Providers
+ * @returns array
+ */
+Budpay::electricityProviders();
+
+/**
+ * This method Perform a Electricity Meter Number Validation
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::electricityValidate();
+
+/**
+ * This method Initiate a Electricity Recharge Payment
+ * Included the option to pass the payload to this method for situations
+ * when the payload is built on the fly (not passed to the controller from a view)
+ * @returns array
+ */
+Budpay::electricityRecharge();
 ```
 
 

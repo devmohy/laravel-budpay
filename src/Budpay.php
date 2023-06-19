@@ -375,7 +375,7 @@ class Budpay
   }
 
   /**
-   * Get all the transactions that have happened overtime
+   * Initiate Bulk Transfer
    * @return array
    */
   public function bulkPayout($data)
