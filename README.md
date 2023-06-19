@@ -269,7 +269,7 @@ Budpay::listRefunds();
 Budpay::fetchRefund();
 ```
 
-## - Payment Features
+## - Payout
 
 ```php
 /**
